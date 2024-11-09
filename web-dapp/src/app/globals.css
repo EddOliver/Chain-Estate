@@ -1,0 +1,183 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+html {
+  height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
+}
+
+.myHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 10%;
+  width: 98%;
+  background-color: #ffffff;
+}
+
+.myHeaderMenu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: auto;
+  gap: 30px;
+}
+
+.myHeaderMenuText {
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  font-family: "Roboto", sans-serif;
+}
+
+.myHeaderMenuText:hover {
+  color: #00aaff;
+  cursor: pointer;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content:flex-start;
+  height: 90%;
+  width: 98%;
+}
+
+.contentProperty {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content:flex-start;
+  height: 90%;
+  width: 98%;
+}
+
+.landingImage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-top: 25%; /* Adjust this value based on the aspect ratio of your image */
+  height: 0; /* This is required for the padding-top trick to work */
+  background-image: url("/landingImage.png");
+  background-size: cover;
+}
+
+.landingImageText {
+  position: absolute;
+  top: calc(10% + 100px);
+  left: 20%;
+  color: white;
+  font-size: 4rem;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 800;
+}
+
+.landingContainer {
+  padding: 0px 20vw;
+  margin-top: 30px;
+}
+
+.landingContainerText {
+  color: rgb(0, 0, 0);
+  font-size: 1.5rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
+}
+
+.landingContainerText2 {
+  color: rgb(0, 0, 0);
+  font-size: 1rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+}
+
+.landingPropertiesContainer {
+  overflow-x: scroll;
+  white-space: nowrap;
+  width: calc(60vw);
+  display: flex; /* Make elements display horizontally */
+  flex-wrap: nowrap;
+}
+
+.propertyCard {
+  display: inline-block;
+  max-width: 360px; /* Set the width of each item */
+  min-width: 360px;
+  width: 360px;
+  max-height: 260px;
+  min-height: 260px;
+  height: 260px; /* Set the height of each item */
+  background-color: #f0f0f0; /* Set the background color of each item */
+  margin: 10px; /* Add some margin for spacing */
+  border-radius: 10px;
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.propertyTextBold {
+  color: rgb(0, 0, 0);
+  font-size: 1.1rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 800;
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
+.propertyTextNormal {
+  color: rgb(0, 0, 0);
+  font-size: 0.8rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
+.propertyImg {
+  width: 100%;
+  border-radius: 10px 10px 0px 0px;
+  height: auto;
+  display: "block"
+}
+
+.propertyPageImg {
+  width: 100%;
+  border-radius: 10px 10px 0px 0px;
+  height: auto;
+  display: "block"
+}
+
+.propertyPageCard {
+  display: inline-block;
+  max-width: 50%; /* Set the width of each item */
+  min-width: 50%;
+  width: 50%;
+  margin: 10px; /* Add some margin for spacing */
+}
+
+.propertyPageTextBold {
+  color: rgb(0, 0, 0);
+  font-size: 1.5rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 800;
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
+.propertyPageTextNormal {
+  color: rgb(0, 0, 0);
+  font-size: 1.3rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  padding-left: 10px;
+  padding-top: 10px;
+}
