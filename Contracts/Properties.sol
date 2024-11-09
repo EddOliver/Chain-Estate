@@ -220,3 +220,6 @@ contract PropertyToken is ERC1155, Ownable, ReentrancyGuard {
         return 0;
     }
 }
+
+
+// y tu culo jai
