@@ -84,7 +84,7 @@ The complete contract used is here in the repository as well as the website.
 
 ## Merge:
 
-<img src="./Images/chain-estate-mint.drawio.png">
+<img src="./Images/chain-estate-merge.drawio.png">
 
 Finally, the merge, this is the process we created to combine several assets, whether whole or fractional, in order to generate a single asset, whether whole or fractional, that can represent a "reid".
 
