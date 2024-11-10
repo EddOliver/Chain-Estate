@@ -1,31 +1,27 @@
 # Chain-Estate
 A platform where you can sell, buy and merge tokenized Real Estate assets.
 
-# Intro:
-
-# Problem:
-
 # Solution:
 
-Creamos una plataforma tipo marketplace de NFTs, sin embargo muy lejos de eso, nuestra plataforma provee la capacidad de generar RWA Tokenization al poder realizar fractions y merges.
+We created a marketplace type platform for NFTs, however, far from that, our platform provides the ability to generate RWA Tokenization by being able to perform fractions and merges.
 
 # Diagrams:
 
-Aqui mostramos los diagramas generales de la solucion.
+Here we show the general diagrams of the solution.
 
 ## Mint:
 
 <img src="./Images/chain-estate-mint.drawio.png">
 
-El proceso de Mint y Retrieve de la informacion de los tokens depende mayormente de [BNB Greenfield](https://greenfield.bnbchain.org/en), este servicio lo estamos consumiendo gracias a [Dcellar](https://dcellar.io/)
+The Mint and Retrieve process of token information depends mostly on [BNB Greenfield](https://greenfield.bnbchain.org/en), we consume this service through [Dcellar](https://dcellar.io/)
 
 <img src="./Images/dcellar.png">
 
-La gran ventaja de utilizar este tipo de servicio combinado con el contrato de [ERC1155](./Contracts/Properties.sol) es que podemos utilizar el token ID como parte de nuestra estructura de archivos.
+The great advantage of using this type of service combined with the contract of [ERC1155](./Contracts/Properties.sol) is that we can use the ID token as part of our file structure.
 
 <img src="./Images/dcellar2.png">
 
-Esto esta coordinado con el smart contract al hacer retrieve del URI como pide el standard.
+This is coordinated with the smart contract when retrieving the URI as requested by the standard.
 
     function uri(uint256 _tokenId)
         public
@@ -43,7 +39,7 @@ Esto esta coordinado con el smart contract al hacer retrieve del URI como pide e
             );
     }
 
-El contrato completo que se utilizo esta aqui en el repositorio.
+The complete contract used is here in the repository.
 
 [Contract](./Contracts/Properties.sol)
 
@@ -51,7 +47,7 @@ El contrato completo que se utilizo esta aqui en el repositorio.
 
 <img src="./Images/chain-estate-sell.drawio.png">
 
-La venta de los tokens no es algo tan trivial como una transferencia de assets, en nuestro contrato cada owner, puede decidir que cantidad de tokens vender al publico.
+The sale of tokens is not something as trivial as a transfer of assets, in our contract each owner can decide how many tokens to sell to the public.
 
     function approveForSale(uint256 _propertyId, uint256 _fractionCount)
         public
@@ -65,11 +61,11 @@ La venta de los tokens no es algo tan trivial como una transferencia de assets, 
         _updateSaleableFractions(msg.sender, _propertyId, _fractionCount);
     }
 
-En nuestra pagina web puedes encontrar el codigo para realizar este setup desde la UI sin necesidad de acceder al smart contract directamente.
+On our website you can find the code to perform this setup from the UI without having to access the smart contract directly.
 
 <img src="./Images/ui.png">
 
-Y al realizar una venta, ya que nos interesa mucho que se realice la trazabilidad de la compra venta de estos assets y propiedades, generamos un evento que genere informacion que se quedara en la chain para poder revisarla en cualquier momento.
+And when making a sale, since we are very interested in the traceability of the purchase and sale of these assets and properties, we generate an event that generates information that will remain in the chain so that it can be reviewed at any time.
 
     // Events
     event PropertyMinted(uint256 indexed propertyId, address indexed minter);
@@ -81,7 +77,7 @@ Y al realizar una venta, ya que nos interesa mucho que se realice la trazabilida
     );
 
 
-El contrato completo que se utilizo esta aqui en el repositorio asi como la pagina web.
+The complete contract used is here in the repository as well as the website.
 
 [Contract](./Contracts/Properties.sol)
 [WebDapp](./web-dapp/src/app/)
@@ -90,7 +86,7 @@ El contrato completo que se utilizo esta aqui en el repositorio asi como la pagi
 
 <img src="./Images/chain-estate-mint.drawio.png">
 
-Por ultimo el merge, este es el proceso que creamos para realizar la combinacion de varios assets, ya sean enteros o fraccionarios con el fin de generar un solo asset, ya sea entero o fraccionario, que pueda representar un "reid".
+Finally, the merge, this is the process we created to combine several assets, whether whole or fractional, in order to generate a single asset, whether whole or fractional, that can represent a "reid".
 
     function mergeTokens(
         uint256[] memory _tokenIds,
@@ -139,6 +135,6 @@ Por ultimo el merge, este es el proceso que creamos para realizar la combinacion
         emit PropertyMinted(propertyCounter.current() - 1, msg.sender);
     }
 
-Aunque puede parecer un proceso algo engorroso en el backend, nuestros usuarios solo tienen que seleccionar las propiedades a combinar, asi como las cantidades fraccionarias que deseen y hacerles merge con solo un boton y una firma de su wallet.
+Although it may seem like a somewhat cumbersome process in the backend, our users only have to select the properties to combine, as well as the fractional amounts they want and merge them with just one button and a signature from their wallet.
 
 <img src="./Images/merge.png">
