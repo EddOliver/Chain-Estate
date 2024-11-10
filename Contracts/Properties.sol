@@ -10,20 +10,22 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 contract PropertyToken is ERC1155, Ownable, ReentrancyGuard {
     // Constants
     string public constant COLLECTION_URI =
-        "https://ipfs.io/ipfs/QmQ9Ggqy9VjYjvofYwKQ6xxQLxMBRXpRNTnTMLF8iDiHCP";
+        "https://greenfield-sp.defibit.io/view/chain-estate/metadata.json";
 
     // Libraries
     using Counters for Counters.Counter;
+    using Strings for uint256;
 
     // Variables
     Counters.Counter private propertyCounter;
+    uint256 public propertiesMinted = 0;
 
     // Structs
 
     struct Property {
+        uint256 tokenId;
         uint256 fractionAmount;
         uint256 pricePerFraction;
-        string contentId;
         bool isPublic;
     }
 
@@ -34,6 +36,7 @@ contract PropertyToken is ERC1155, Ownable, ReentrancyGuard {
 
     // URI Mappings
     mapping(uint256 => Property) public properties;
+    mapping(uint256 => address[]) public owners;
     mapping(address => ApprovedSale[]) public saleableFractionsMap;
 
     // Constructor
@@ -45,7 +48,7 @@ contract PropertyToken is ERC1155, Ownable, ReentrancyGuard {
     {}
 
     // Events
-    event PropertyMinted(uint256 indexed propertyId);
+    event PropertyMinted(uint256 indexed propertyId, address indexed minter);
     event FractionSold(
         uint256 indexed propertyId,
         address indexed seller,
@@ -54,6 +57,48 @@ contract PropertyToken is ERC1155, Ownable, ReentrancyGuard {
     );
 
     // User Functions
+
+    function mergeTokens(
+        uint256[] memory _tokenIds,
+        uint256[] memory _amounts,
+        uint256 _fractionCount
+    ) public nonReentrant {
+        bool _continue = true;
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            if (balanceOf(msg.sender, _tokenIds[i]) >= _amounts[i]) {
+                continue;
+            } else {
+                _continue = false;
+            }
+        }
+        require(_continue);
+        uint256 value = 0;
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            value += calculateCost(_tokenIds[i], _amounts[i]);
+        }
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            _burn(msg.sender, _tokenIds[i], _amounts[i]);
+            Property storage temp = properties[_tokenIds[i]];
+            _updateProperty(
+                _tokenIds[i],
+                temp.fractionAmount - _amounts[i],
+                temp.pricePerFraction,
+                temp.isPublic
+            );
+        }
+        properties[propertyCounter.current()] = Property({
+            fractionAmount: _fractionCount,
+            pricePerFraction: value / _fractionCount,
+            isPublic: true,
+            tokenId: propertyCounter.current()
+        });
+        owners[propertyCounter.current()] = [msg.sender];
+        _updateSaleableFractions(msg.sender, propertyCounter.current(), 0);
+        _mint(msg.sender, propertyCounter.current(), _fractionCount, "");
+        propertyCounter.increment();
+        propertiesMinted = propertyCounter.current();
+        emit PropertyMinted(propertyCounter.current() - 1, msg.sender);
+    }
 
     function approveForSale(uint256 _propertyId, uint256 _fractionCount)
         public
@@ -104,7 +149,7 @@ contract PropertyToken is ERC1155, Ownable, ReentrancyGuard {
             _getSaleableFractions(_seller, _propertyId) - _fractionCount
         );
         _updateSaleableFractions(_buyer, _propertyId, 0);
-
+        _updateOwners(_buyer, _propertyId);
         emit FractionSold(_propertyId, _seller, _buyer, _fractionCount);
     }
 
@@ -113,7 +158,6 @@ contract PropertyToken is ERC1155, Ownable, ReentrancyGuard {
         address _recipient,
         uint256 _fractionCount,
         uint256 _initialPricePerFraction,
-        string memory _contentId,
         bool _isPublic
     ) public onlyOwner nonReentrant {
         require(_fractionCount > 0, "Fraction count must be greater than zero");
@@ -121,32 +165,31 @@ contract PropertyToken is ERC1155, Ownable, ReentrancyGuard {
             _initialPricePerFraction > 0,
             "Price must be greater than zero"
         );
-
         properties[propertyCounter.current()] = Property({
             fractionAmount: _fractionCount,
             pricePerFraction: _initialPricePerFraction,
-            contentId: _contentId,
-            isPublic: _isPublic
+            isPublic: _isPublic,
+            tokenId: propertyCounter.current()
         });
-
+        owners[propertyCounter.current()] = [_recipient];
         _updateSaleableFractions(_recipient, propertyCounter.current(), 0);
         _mint(_recipient, propertyCounter.current(), _fractionCount, "");
         propertyCounter.increment();
-        emit PropertyMinted(propertyCounter.current() - 1);
+        propertiesMinted = propertyCounter.current();
+        emit PropertyMinted(propertyCounter.current() - 1, _recipient);
     }
 
     function updateProperty(
         uint256 _propertyId,
         uint256 _fractionCount,
         uint256 _pricePerFraction,
-        string memory _contentId,
         bool _isPublic
     ) public onlyOwner {
         properties[_propertyId] = Property({
             fractionAmount: _fractionCount,
             pricePerFraction: _pricePerFraction,
-            contentId: _contentId,
-            isPublic: _isPublic
+            isPublic: _isPublic,
+            tokenId: _propertyId
         });
     }
 
@@ -165,8 +208,9 @@ contract PropertyToken is ERC1155, Ownable, ReentrancyGuard {
         return
             string(
                 abi.encodePacked(
-                    "https://ipfs.io/ipfs/",
-                    properties[_tokenId].contentId
+                    "https://greenfield-sp.defibit.io/view/chain-estate/properties/",
+                    properties[_tokenId].tokenId.toString(),
+                    "/metadata.json"
                 )
             );
     }
@@ -177,6 +221,18 @@ contract PropertyToken is ERC1155, Ownable, ReentrancyGuard {
         returns (uint256)
     {
         return (properties[propertyId].pricePerFraction * fractionCount);
+    }
+
+    function _updateOwners(address _owner, uint256 _propertyId) internal {
+        bool exists = false;
+        for (uint256 i = 0; i < owners[_propertyId].length; i++) {
+            if (owners[_propertyId][i] == _owner) {
+                exists = true;
+            }
+        }
+        if (!exists) {
+            owners[_propertyId].push(_owner);
+        }
     }
 
     // Private Utility Functions
@@ -204,6 +260,20 @@ contract PropertyToken is ERC1155, Ownable, ReentrancyGuard {
                 })
             );
         }
+    }
+
+    function _updateProperty(
+        uint256 _propertyId,
+        uint256 _fractionCount,
+        uint256 _pricePerFraction,
+        bool _isPublic
+    ) internal {
+        properties[_propertyId] = Property({
+            fractionAmount: _fractionCount,
+            pricePerFraction: _pricePerFraction,
+            isPublic: _isPublic,
+            tokenId: _propertyId
+        });
     }
 
     function _getSaleableFractions(address _owner, uint256 _propertyId)

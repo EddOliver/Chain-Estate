@@ -115,10 +115,25 @@ body {
   max-width: 360px; /* Set the width of each item */
   min-width: 360px;
   width: 360px;
-  max-height: 260px;
-  min-height: 260px;
-  height: 260px; /* Set the height of each item */
+  max-height: 300px;
+  min-height: 300px;
+  height: 300px; /* Set the height of each item */
   background-color: #f0f0f0; /* Set the background color of each item */
+  margin: 10px; /* Add some margin for spacing */
+  border-radius: 10px;
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.propertyCardSelected {
+  display: inline-block;
+  max-width: 360px; /* Set the width of each item */
+  min-width: 360px;
+  width: 360px;
+  max-height: 300px;
+  min-height: 300px;
+  height: 300px; /* Set the height of each item */
+  background-color: #f0f0f0; /* Set the background color of each item */
+  border: 5px solid #ffe500;
   margin: 10px; /* Add some margin for spacing */
   border-radius: 10px;
   box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
@@ -175,9 +190,37 @@ body {
 
 .propertyPageTextNormal {
   color: rgb(0, 0, 0);
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-family: "Roboto", sans-serif;
   font-weight: 400;
   padding-left: 10px;
   padding-top: 10px;
+}
+
+.propertyPageAttributes {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content:space-between;
+  gap: 10px;
+  padding: 10px;
+  margin: 5px;
+}
+
+.propertyPageAttribute {
+  display: flex;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.propertyPageTextNormalAttribute {
+  color: rgb(0, 0, 0);
+  font-size: 1rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
 }

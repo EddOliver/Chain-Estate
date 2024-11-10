@@ -6,11 +6,11 @@ const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID
 
 // 2. Set chains
 const mainnet = {
-  chainId: 204,
+  chainId: process.env.NEXT_PUBLIC_CHAIN_ID,
   name: 'opBNB Mainnet',
   currency: 'BNB',
   explorerUrl: 'https://opbnbscan.com',
-  rpcUrl: 'https://opbnb-mainnet-rpc.bnbchain.org'
+  rpcUrl: process.env.NEXT_PUBLIC_RPC
 }
 
 // 3. Create a metadata object

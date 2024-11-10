@@ -4,7 +4,7 @@ import MyHeader from "./components/myHeader";
 import { ethers } from "ethers";
 import { abiTokens } from "@/contracts/properties";
 import { getMetadata } from "@/api/getMetadata";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 
 const optionsUSD = {
   style: "currency",
@@ -38,7 +38,7 @@ export default function Landing() {
   );
   const [metadatas, setMetadatas] = React.useState([]);
   const [usd, setUsd] = React.useState(0);
-  const router = useRouter()
+  const router = useRouter();
 
   const geUSD = async () => {
     var myHeaders = new Headers();
@@ -137,78 +137,59 @@ export default function Landing() {
             {metadatas.map((metadata, index) => (
               <React.Fragment key={"Metadata:" + index}>
                 {metadata.attributes.some(
-                  (attribute) => attribute.value === "Full property"
-                ) && (
-                  <div onClick={() => router.push("/property?id=" + index)} className="propertyCard" key={"Property:" + index}>
-                    <img src={metadata.image} className="propertyImg" />
-                    <div className="propertyTextBold">
-                      {(
-                        usd *
-                        ethers.utils.formatEther(metadata.pricePerFraction)
-                      ).toLocaleString("en-US", optionsUSD)}{" "}
-                      USD |{" "}
-                      {parseFloat(
-                        ethers.utils.formatEther(metadata.pricePerFraction)
-                      ).toFixed(2)}{" "}
-                      BNB{" "}
-                      {metadata.fractionAmount.toNumber() > 1 &&
-                        "| " +
-                          metadata.fractionAmount.toNumber().toString() +
-                          " Fractions"}
-                    </div>
-                    <div className="propertyTextNormal">
-                      {metadata.attributes[0].value} |{" "}
-                      {metadata.attributes[3].value}m2 |{" "}
-                      {metadata.attributes[4].value} |{" "}
-                      {metadata.isPublic ? "Public" : "Private"} |{" "}
-                      {metadata.attributes[6].value}
-                    </div>
-                    <div className="propertyTextNormal">
-                      {/*
+                  (attribute) =>
+                    attribute.value === "Full property" ||
+                    attribute.value === "Fractional"
+                ) &&
+                  metadata.fractionAmount.toNumber() > 0 && (
+                    <div className="propertyCard" key={"Property:" + index}>
+                      <img
+                        onClick={() =>
+                          (window.location.href = "/property?id=" + index)
+                        }
+                        src={metadata.image}
+                        className="propertyImg"
+                      />
+                      <div className="propertyTextBold">
+                        {(
+                          usd *
+                          ethers.utils.formatEther(metadata.pricePerFraction)
+                        ).toLocaleString("en-US", optionsUSD)}{" "}
+                        USD |{" "}
+                        {parseFloat(
+                          ethers.utils.formatEther(metadata.pricePerFraction)
+                        ).toFixed(2)}{" "}
+                        BNB{" "}
+                        {metadata.fractionAmount.toNumber() > 1 &&
+                          "| " +
+                            metadata.fractionAmount.toNumber().toString() +
+                            " Fractions"}
+                      </div>
+                      <div className="propertyTextNormal">
+                        {metadata.attributes[0].value} |{" "}
+                        {metadata.attributes[3].value}m2 |{" "}
+                        {metadata.attributes[4].value} |{" "}
+                        {metadata.isPublic ? "Public" : "Private"} |{" "}
+                        {metadata.attributes[6].value}
+                      </div>
+                      <div className="propertyTextNormal">
+                        {/*
                 addresses[0].substring(0, 40) + "..."
                 */}
+                      </div>
                     </div>
-                  </div>
-                )}
-                {metadata.attributes.some(
-                  (attribute) => attribute.value === "Fractional"
-                ) && (
-                  <div className="propertyCard" key={"Property:" + index}>
-                    <img src={metadata.image} className="propertyImg" />
-                    <div className="propertyTextBold">
-                      {(
-                        usd *
-                        ethers.utils.formatEther(metadata.pricePerFraction)
-                      ).toLocaleString("en-US", optionsUSD)}{" "}
-                      USD |{" "}
-                      {parseFloat(
-                        ethers.utils.formatEther(metadata.pricePerFraction)
-                      ).toFixed(2)}{" "}
-                      BNB{" "}
-                      {metadata.fractionAmount.toNumber() > 1 &&
-                        "| " +
-                          metadata.fractionAmount.toNumber().toString() +
-                          " Fractions"}
-                    </div>
-                    <div className="propertyTextNormal">
-                      {metadata.attributes[0].value} |{" "}
-                      {metadata.attributes[3].value}m2 |{" "}
-                      {metadata.attributes[4].value} |{" "}
-                      {metadata.isPublic ? "Public" : "Private"} |{" "}
-                      {metadata.attributes[6].value}
-                    </div>
-                    <div className="propertyTextNormal">
-                      {/*
-                addresses[0].substring(0, 40) + "..."
-                */}
-                    </div>
-                  </div>
-                )}
+                  )}
                 {metadata.attributes.some(
                   (attribute) => attribute.value === "Merge"
                 ) && (
                   <div className="propertyCard" key={"Property:" + index}>
-                    <img src={metadata.image} className="propertyImg" />
+                    <img
+                      onClick={() =>
+                        (window.location.href = "/property?id=" + index)
+                      }
+                      src={metadata.image}
+                      className="propertyImg"
+                    />
                     <div className="propertyTextBold">
                       {(
                         usd *
